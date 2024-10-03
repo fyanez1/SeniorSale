@@ -1,6 +1,7 @@
 import { Authing } from "./app";
 import { AlreadyFriendsError, FriendNotFoundError, FriendRequestAlreadyExistsError, FriendRequestDoc, FriendRequestNotFoundError } from "./concepts/friending";
 import { PostAuthorNotMatchError, PostDoc } from "./concepts/posting";
+import { SellDoc } from "./concepts/selling";
 import { Router } from "./framework/router";
 
 /**
@@ -36,6 +37,25 @@ export default class Responses {
     const to = requests.map((request) => request.to);
     const usernames = await Authing.idsToUsernames(from.concat(to));
     return requests.map((request, i) => ({ ...request, from: usernames[i], to: usernames[i + requests.length] }));
+  }
+
+  /**
+   * Convert SellDoc into more readable format for the frontend by converting the seller id into a username.
+   */
+  static async item(item: SellDoc | null) {
+    if (!item) {
+      return item;
+    }
+    const seller = await Authing.getUserById(item.seller);
+    return { ...item, seller: seller.username };
+  }
+
+  /**
+   * Convert items up for sale into more readable format
+   */
+  static async items(items: SellDoc[]) {
+    const sellers = await Authing.idsToUsernames(items.map((item) => item.seller));
+    return items.map((item, i) => ({ ...item, seller: sellers[i] }));
   }
 }
 

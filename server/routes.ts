@@ -2,7 +2,7 @@ import { ObjectId } from "mongodb";
 
 import { Router, getExpressRouter } from "./framework/router";
 
-import { Authing, Friending, Posting, Sessioning } from "./app";
+import { Authing, Friending, Posting, Selling, Sessioning } from "./app";
 import { PostOptions } from "./concepts/posting";
 import { SessionDoc } from "./concepts/sessioning";
 import Responses from "./responses";
@@ -15,6 +15,7 @@ import { z } from "zod";
 class Routes {
   // Synchronize the concepts from `app.ts`.
 
+  //////////////////////////////////// sessioning ////////////////////////////////////
   @Router.get("/session")
   async getSessionUser(session: SessionDoc) {
     const user = Sessioning.getUser(session);
@@ -70,6 +71,7 @@ class Routes {
     return { msg: "Logged out!" };
   }
 
+  //////////////////////////////////// posting ////////////////////////////////////
   @Router.get("/posts")
   @Router.validate(z.object({ author: z.string().optional() }))
   async getPosts(author?: string) {
@@ -106,6 +108,7 @@ class Routes {
     return Posting.delete(oid);
   }
 
+  //////////////////////////////////// friending ////////////////////////////////////
   @Router.get("/friends")
   async getFriends(session: SessionDoc) {
     const user = Sessioning.getUser(session);
@@ -152,6 +155,45 @@ class Routes {
     const fromOid = (await Authing.getUserByUsername(from))._id;
     return await Friending.rejectRequest(fromOid, user);
   }
+
+  //////////////////////////////////// selling ////////////////////////////////////
+  @Router.get("/items")
+  @Router.validate(z.object({ author: z.string().optional() }))
+  async getItems(seller?: string) {
+    let items;
+    if (seller) {
+      const id = (await Authing.getUserByUsername(seller))._id;
+      items = await Selling.getBySeller(id);
+    } else {
+      items = await Selling.getItems();
+    }
+    return Responses.items(items);
+  }
+
+  @Router.post("/items")
+  async createItem(session: SessionDoc, name: string, cost: number, description: string, pictures: Array<BinaryData>, contact: string) {
+    const user = Sessioning.getUser(session);
+    const created = await Selling.create(user, name, cost, description, pictures, contact);
+    return { msg: created.msg, post: await Responses.item(created.item) };
+  }
+
+  @Router.patch("/items/:id")
+  async updateItem(session: SessionDoc, id: string, name?: string, cost?: number, description?: string, pictures?: Array<BinaryData>, contact?: string) {
+    const user = Sessioning.getUser(session);
+    const oid = new ObjectId(id);
+    await Selling.assertSellerIsUser(oid, user);
+    return await Selling.update(oid, name, cost, description, pictures, contact);
+  }
+
+  @Router.delete("/items/:id")
+  async deleteItem(session: SessionDoc, id: string) {
+    const user = Sessioning.getUser(session);
+    const oid = new ObjectId(id);
+    await Selling.assertSellerIsUser(oid, user);
+    return Selling.delete(oid);
+  }
+
+  //////////////////////////////////// selling ////////////////////////////////////
 }
 
 /** The web app. */

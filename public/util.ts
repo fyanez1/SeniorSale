@@ -80,6 +80,31 @@ const operations: Operation[] = [
     method: "DELETE",
     fields: { id: "input" },
   },
+  /////// selling /////////
+  {
+    name: "Get Items for Sale(empty for all)",
+    endpoint: "/api/items",
+    method: "GET",
+    fields: { seller: "input" },
+  },
+  {
+    name: "Put Item Up for Sale",
+    endpoint: "/api/items",
+    method: "POST",
+    fields: { name: "input", cost: "input", description: "input", pictures: "input", contact: "input" },
+  },
+  {
+    name: "Update Item",
+    endpoint: "/api/items/:id",
+    method: "PATCH",
+    fields: { id: "input", name: "input", cost: "input", description: "input", pictures: "input", contact: "input" },
+  },
+  {
+    name: "Delete Item",
+    endpoint: "/api/items/:id",
+    method: "DELETE",
+    fields: { id: "input" },
+  },
   //
   // ...
   //
