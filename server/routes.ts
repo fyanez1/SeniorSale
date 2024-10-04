@@ -2,7 +2,7 @@ import { ObjectId } from "mongodb";
 
 import { Router, getExpressRouter } from "./framework/router";
 
-import { Authing, Friending, Posting, Selling, Sessioning, Upvoting } from "./app";
+import { Authing, Friending, Posting, Selling, Sessioning } from "./app";
 import { PostOptions } from "./concepts/posting";
 import { SessionDoc } from "./concepts/sessioning";
 import Responses from "./responses";
@@ -193,29 +193,29 @@ class Routes {
   }
 
   //////////////////////////////////// upvoting ////////////////////////////////////
-  @Router.get("/upvotes")
-  async getUpvotes(seller: string) {
-    // const id = (await Authing.getUserByUsername(seller))._id;
-    const numUpvotes = await Upvoting.getNumUpvotes(seller);
-    return { msg: "Number of upvotes", upvotes: numUpvotes };
-  }
+  // @Router.get("/upvotes")
+  // async getUpvotes(seller: string) {
+  //   // const id = (await Authing.getUserByUsername(seller))._id;
+  //   const numUpvotes = await Upvoting.getNumUpvotes(seller);
+  //   return { msg: "Number of upvotes", upvotes: numUpvotes };
+  // }
 
-  @Router.patch("/upvotes/add/:id")
-  async addUpvote(session: SessionDoc, seller: string) {
-    const user = Sessioning.getUser(session);
-    const id = (await Authing.getUserByUsername(seller))._id;
-    const oid = new ObjectId(id);
-    // await Upvoting.assertUpvoterIsUser(oid, user);
-    return await Upvoting.upvote(user, oid);
-  }
+  // @Router.patch("/upvotes/add/:id")
+  // async addUpvote(session: SessionDoc, seller: string) {
+  //   const user = Sessioning.getUser(session);
+  //   const id = (await Authing.getUserByUsername(seller))._id;
+  //   const oid = new ObjectId(id);
+  //   // await Upvoting.assertUpvoterIsUser(oid, user);
+  //   return await Upvoting.upvote(user);
+  // }
 
-  @Router.patch("/upvotes/remove/:id")
-  async removeUpvote(session: SessionDoc, id: string) {
-    const user = Sessioning.getUser(session);
-    const oid = new ObjectId(id);
-    // await Upvoting.assertUpvoterIsUser(oid, user);
-    return await Upvoting.removeUpvote(user, oid);
-  }
+  // @Router.patch("/upvotes/remove/:id")
+  // async removeUpvote(session: SessionDoc, id: string) {
+  //   const user = Sessioning.getUser(session);
+  //   const oid = new ObjectId(id);
+  //   // await Upvoting.assertUpvoterIsUser(oid, user);
+  //   return await Upvoting.removeUpvote(user, oid);
+  // }
 
   //////////////////////////////////// commenting ////////////////////////////////////
   @Router.get("/comments")

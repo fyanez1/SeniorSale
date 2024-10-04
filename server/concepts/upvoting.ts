@@ -43,22 +43,22 @@ export default class UpvotingConcept {
     return { msg: "Sucessfully removed upvote from seller", upvotes: await this.getNumUpvotes(seller) };
   }
 
-//   async assertUpvoterIsUser(user: ObjectId, expectedUser: ObjectId) {
-//     const upvoteObject = await this.upvotes.readOne({ user });
-//     if (!upvoteObject) {
-//       throw new NotFoundError(`User does not exist!`);
-//     }
-//     if (upvoteObject.seller.toString() !== expectedUser.toString()) {
-//       throw new UpvoterNotMatchError(expectedUser, user);
-//     }
-//   }
-// }
+  //   async assertUpvoterIsUser(user: ObjectId, expectedUser: ObjectId) {
+  //     const upvoteObject = await this.upvotes.readOne({ user });
+  //     if (!upvoteObject) {
+  //       throw new NotFoundError(`User does not exist!`);
+  //     }
+  //     if (upvoteObject.seller.toString() !== expectedUser.toString()) {
+  //       throw new UpvoterNotMatchError(expectedUser, user);
+  //     }
+  //   }
+  // }
 
-// export class UpvoterNotMatchError extends NotAllowedError {
-//   constructor(
-//     public readonly seller: ObjectId,
-//     public readonly _id: ObjectId,
-//   ) {
-//     super("{0} cannot upvote {1}!", seller, _id);
-//   }
-// }
+  // export class UpvoterNotMatchError extends NotAllowedError {
+  //   constructor(
+  //     public readonly seller: ObjectId,
+  //     public readonly _id: ObjectId,
+  //   ) {
+  //     super("{0} cannot upvote {1}!", seller, _id);
+  //   }
+}
