@@ -158,7 +158,6 @@ class Routes {
 
   //////////////////////////////////// selling ////////////////////////////////////
   @Router.get("/items")
-  @Router.validate(z.object({ author: z.string().optional() }))
   async getItems(seller?: string) {
     let items;
     if (seller) {
@@ -193,7 +192,45 @@ class Routes {
     return Selling.delete(oid);
   }
 
-  //////////////////////////////////// selling ////////////////////////////////////
+  //////////////////////////////////// upvoting ////////////////////////////////////
+  @Router.get("/upvotes")
+  async getUpvotes(itemId: string) {}
+
+  @Router.post("/upvotes")
+  async addUpvote(session: SessionDoc, itemId: string, comment: string) {}
+
+  @Router.delete("/upvotes/:id")
+  async removeUpvote(session: SessionDoc, itemId: string) {}
+
+  //////////////////////////////////// commenting ////////////////////////////////////
+  @Router.get("/comments")
+  async getComents(itemId: string) {}
+
+  @Router.post("/comments")
+  async createComment(session: SessionDoc, itemId: string, comment: string) {}
+
+  @Router.patch("/comments/:id")
+  async updateComment(session: SessionDoc, itemId: string, comment: string) {}
+
+  @Router.delete("/comments/:id")
+  async deleteComment(session: SessionDoc, itemId: string) {}
+
+  //////////////////////////////////// claiming ////////////////////////////////////
+  @Router.get("/claims")
+  async getQueuePosition(session: SessionDoc, itemId: string) {}
+
+  @Router.post("/claims")
+  async claimItem(session: SessionDoc, itemId: string) {}
+
+  @Router.delete("/claims/:id")
+  async unclaimItem(session: SessionDoc, itemId: string) {}
+
+  //////////////////////////////////// messaging ////////////////////////////////////
+  @Router.get("/messages/:id")
+  async getMessages(session: SessionDoc, to: string) {}
+
+  @Router.post("/messages/:id")
+  async sendMessage(session: SessionDoc, to: string) {}
 }
 
 /** The web app. */
