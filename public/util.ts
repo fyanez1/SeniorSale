@@ -14,6 +14,7 @@ type Operation = {
  * This list of operations is used to generate the manual testing UI.
  */
 const operations: Operation[] = [
+  /////// user login /////////
   {
     name: "Get Session User (logged in user)",
     endpoint: "/api/session",
@@ -56,6 +57,7 @@ const operations: Operation[] = [
     method: "GET",
     fields: { username: "input" },
   },
+  /////// posts /////////
   {
     name: "Get Posts (empty for all)",
     endpoint: "/api/posts",
@@ -80,7 +82,7 @@ const operations: Operation[] = [
     method: "DELETE",
     fields: { id: "input" },
   },
-  /////// selling /////////
+  /////// items for sale /////////
   {
     name: "Get Items for Sale(empty for all)",
     endpoint: "/api/items",
@@ -105,9 +107,25 @@ const operations: Operation[] = [
     method: "DELETE",
     fields: { id: "input" },
   },
-  //
-  // ...
-  //
+  /////// upvotes /////////
+  {
+    name: "Get number of upvotes",
+    endpoint: "/api/upvotes",
+    method: "GET",
+    fields: { seller: "input" },
+  },
+  {
+    name: "Upvote",
+    endpoint: "/api/upvotes/add/:id",
+    method: "PATCH",
+    fields: { seller: "input" },
+  },
+  {
+    name: "Remove upvote",
+    endpoint: "/api/upvotes/remove/:id",
+    method: "PATCH",
+    fields: { seller: "input" },
+  },
 ];
 
 /*
