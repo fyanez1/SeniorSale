@@ -151,6 +151,31 @@ const operations: Operation[] = [
     method: "DELETE",
     fields: { itemId: "input", commentId: "input" },
   },
+  /////// claiming items /////////
+  {
+    name: "Get Queue Position",
+    endpoint: "/api/items/:itemId/position",
+    method: "GET",
+    fields: { itemId: "input" },
+  },
+  {
+    name: "Get Item Queue",
+    endpoint: "/api/items/:itemId/queue",
+    method: "GET",
+    fields: { itemId: "input" },
+  },
+  {
+    name: "Claim Item",
+    endpoint: "/api/items/:itemId/claim",
+    method: "PATCH",
+    fields: { itemId: "input" },
+  },
+  {
+    name: "Unclaim Item",
+    endpoint: "/api/items/:itemId/unclaim",
+    method: "PATCH",
+    fields: { itemId: "input" },
+  },
 ];
 
 /*

@@ -1,3 +1,4 @@
+import { ObjectId } from "mongodb";
 import { Authing } from "./app";
 import { CommentDoc } from "./concepts/commenting";
 import { AlreadyFriendsError, FriendNotFoundError, FriendRequestAlreadyExistsError, FriendRequestDoc, FriendRequestNotFoundError } from "./concepts/friending";
@@ -48,6 +49,11 @@ export default class Responses {
     return comments.map((comment, i) => ({ ...comment, author: authors[i] }));
   }
 
+  static async queues(queue: Array<ObjectId>) {
+    const claimers = await Authing.idsToUsernames(queue);
+    return { queue: claimers };
+  }
+
   /**
    * Convert FriendRequestDoc into more readable format for the frontend
    * by converting the ids into usernames.
@@ -66,7 +72,7 @@ export default class Responses {
     if (!item) {
       return item;
     }
-    const seller = await Authing.getUserById(item.seller);
+    const seller = await Authing.getUserById(item.user);
     return { ...item, seller: seller.username };
   }
 
@@ -74,7 +80,7 @@ export default class Responses {
    * Convert items up for sale into more readable format
    */
   static async items(items: SellDoc[]) {
-    const sellers = await Authing.idsToUsernames(items.map((item) => item.seller));
+    const sellers = await Authing.idsToUsernames(items.map((item) => item.user));
     return items.map((item, i) => ({ ...item, seller: sellers[i] }));
   }
 }

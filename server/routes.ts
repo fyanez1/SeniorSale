@@ -251,14 +251,39 @@ class Routes {
   }
 
   //////////////////////////////////// claiming ////////////////////////////////////
-  @Router.get("/claims")
-  async getQueuePosition(session: SessionDoc, itemId: string) {}
+  @Router.get("/items/:itemId/position")
+  async getQueuePosition(session: SessionDoc, itemId: string) {
+    const user = Sessioning.getUser(session);
+    const itemOid = new ObjectId(itemId);
+    const position = await Selling.getQueuePosition(itemOid, user);
+    if (position == 0) {
+      return { msg: "You are not on the queue for the item." };
+    }
+    return { msg: "You are on the queue for the item.", position: position };
+  }
 
-  @Router.post("/claims")
-  async claimItem(session: SessionDoc, itemId: string) {}
+  @Router.get("/items/:itemId/queue")
+  async getItemQueue(itemId: string) {
+    const itemOid = new ObjectId(itemId);
+    const queue = await Selling.getItemQueue(itemOid);
+    return Responses.queues(queue);
+  }
 
-  @Router.delete("/claims/:id")
-  async unclaimItem(session: SessionDoc, itemId: string) {}
+  @Router.patch("/items/:itemId/claim")
+  async claimItem(session: SessionDoc, itemId: string) {
+    const user = Sessioning.getUser(session);
+    const itemOid = new ObjectId(itemId);
+    await Selling.claimItem(itemOid, user);
+    return { msg: "Item claimed!" };
+  }
+
+  @Router.patch("/items/:itemId/unclaim")
+  async unclaimItem(session: SessionDoc, itemId: string) {
+    const user = Sessioning.getUser(session);
+    const itemOid = new ObjectId(itemId);
+    await Selling.unclaimItem(itemOid, user);
+    return { msg: "Item unclaimed!" };
+  }
 
   //////////////////////////////////// messaging ////////////////////////////////////
   @Router.get("/messages/:id")
