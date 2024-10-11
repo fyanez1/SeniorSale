@@ -97,13 +97,13 @@ const operations: Operation[] = [
   },
   {
     name: "Update Item",
-    endpoint: "/api/items/:id",
+    endpoint: "/api/items/:itemId",
     method: "PATCH",
     fields: { id: "input", name: "input", cost: "input", description: "input", pictures: "input", contact: "input" },
   },
   {
     name: "Delete Item",
-    endpoint: "/api/items/:id",
+    endpoint: "/api/items/:itemId",
     method: "DELETE",
     fields: { id: "input" },
   },
@@ -125,6 +125,31 @@ const operations: Operation[] = [
     endpoint: "/api/upvotes/remove/:id",
     method: "PATCH",
     fields: { seller: "input" },
+  },
+  /////// comments /////////
+  {
+    name: "Get Comments",
+    endpoint: "/api/items/:itemId/comments",
+    method: "GET",
+    fields: { itemId: "input" },
+  },
+  {
+    name: "Create Comment",
+    endpoint: "/api/items/:itemId/comments",
+    method: "POST",
+    fields: { itemId: "input", comment: "input" },
+  },
+  {
+    name: "Edit Comment",
+    endpoint: "/api/items/:itemId/comments/:commentId",
+    method: "PATCH",
+    fields: { itemId: "input", commentId: "input", comment: "input" },
+  },
+  {
+    name: "Delete Comment",
+    endpoint: "/api/items/:itemId/comments/:commentId",
+    method: "DELETE",
+    fields: { itemId: "input", commentId: "input" },
   },
 ];
 

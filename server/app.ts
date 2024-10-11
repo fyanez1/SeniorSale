@@ -1,4 +1,5 @@
 import AuthenticatingConcept from "./concepts/authenticating";
+import CommentingConcept from "./concepts/commenting";
 import FriendingConcept from "./concepts/friending";
 import PostingConcept from "./concepts/posting";
 import SellingConcept from "./concepts/selling";
@@ -13,3 +14,4 @@ export const Posting = new PostingConcept("posts");
 export const Friending = new FriendingConcept("friends");
 export const Selling = new SellingConcept("items");
 export const Upvoting = new UpvotingConcept("upvotes");
+export const Commenting = new CommentingConcept("comments");

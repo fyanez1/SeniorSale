@@ -2,7 +2,7 @@ import { ObjectId } from "mongodb";
 
 import { Router, getExpressRouter } from "./framework/router";
 
-import { Authing, Friending, Posting, Selling, Sessioning } from "./app";
+import { Authing, Commenting, Friending, Posting, Selling, Sessioning } from "./app";
 import { PostOptions } from "./concepts/posting";
 import { SessionDoc } from "./concepts/sessioning";
 import Responses from "./responses";
@@ -176,7 +176,7 @@ class Routes {
     return { msg: created.msg, post: await Responses.item(created.item) };
   }
 
-  @Router.patch("/items/:id")
+  @Router.patch("/items/:itemId")
   async updateItem(session: SessionDoc, id: string, name?: string, cost?: number, description?: string, pictures?: Array<BinaryData>, contact?: string) {
     const user = Sessioning.getUser(session);
     const oid = new ObjectId(id);
@@ -184,7 +184,7 @@ class Routes {
     return await Selling.update(oid, name, cost, description, pictures, contact);
   }
 
-  @Router.delete("/items/:id")
+  @Router.delete("/items/:itemId")
   async deleteItem(session: SessionDoc, id: string) {
     const user = Sessioning.getUser(session);
     const oid = new ObjectId(id);
@@ -218,17 +218,37 @@ class Routes {
   // }
 
   //////////////////////////////////// commenting ////////////////////////////////////
-  @Router.get("/comments")
-  async getComents(itemId: string) {}
+  @Router.get("/items/:itemId/comments")
+  async getComents(itemId: ObjectId) {
+    let comments;
+    comments = await Commenting.getByItem(itemId);
+    return Responses.comments(comments);
+  }
 
-  @Router.post("/comments")
-  async createComment(session: SessionDoc, itemId: string, comment: string) {}
+  @Router.post("/items/:itemId/comments")
+  async createComment(session: SessionDoc, itemId: ObjectId, comment: string) {
+    const user = Sessioning.getUser(session);
+    const created = await Commenting.createComment(itemId, comment, user);
+    return { msg: created.msg, comment: await Responses.comment(created.comment) };
+  }
 
-  @Router.patch("/comments/:id")
-  async updateComment(session: SessionDoc, itemId: string, comment: string) {}
+  @Router.patch("/items/:itemId/comments/:commentId")
+  async editComment(session: SessionDoc, itemId: string, commentId: string, comment?: string) {
+    const user = Sessioning.getUser(session);
+    const itemOid = new ObjectId(itemId);
+    const commentOid = new ObjectId(commentId);
+    await Commenting.assertCommenterIsUser(itemOid, commentOid, user);
+    return await Commenting.editComment(itemOid, commentOid, comment);
+  }
 
-  @Router.delete("/comments/:id")
-  async deleteComment(session: SessionDoc, itemId: string) {}
+  @Router.delete("/items/:itemId/comments/:commentId")
+  async deleteComment(session: SessionDoc, itemId: ObjectId, commentId: string) {
+    const user = Sessioning.getUser(session);
+    const itemOid = new ObjectId(itemId);
+    const commentOid = new ObjectId(commentId);
+    await Commenting.assertCommenterIsUser(itemOid, commentOid, user);
+    return Commenting.delete(itemOid, commentOid);
+  }
 
   //////////////////////////////////// claiming ////////////////////////////////////
   @Router.get("/claims")
