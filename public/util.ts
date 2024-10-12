@@ -176,6 +176,25 @@ const operations: Operation[] = [
     method: "PATCH",
     fields: { itemId: "input" },
   },
+  /////// rating /////////
+  {
+    name: "Get Seller's Rating",
+    endpoint: "/api/ratings",
+    method: "GET",
+    fields: { seller: "input" },
+  },
+  {
+    name: "Rate item",
+    endpoint: "/api/ratings/:itemId",
+    method: "POST",
+    fields: { seller: "input", item: "input", rating: "input" },
+  },
+  {
+    name: "Change Rating",
+    endpoint: "/api/ratings/:itemId",
+    method: "PATCH",
+    fields: { seller: "input", item: "input", rating: "input" },
+  },
 ];
 
 /*

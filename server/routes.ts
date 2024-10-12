@@ -2,7 +2,7 @@ import { ObjectId } from "mongodb";
 
 import { Router, getExpressRouter } from "./framework/router";
 
-import { Authing, Commenting, Friending, Posting, Selling, Sessioning } from "./app";
+import { Authing, Commenting, Friending, Posting, Rating, Selling, Sessioning } from "./app";
 import { PostOptions } from "./concepts/posting";
 import { SessionDoc } from "./concepts/sessioning";
 import Responses from "./responses";
@@ -192,31 +192,6 @@ class Routes {
     return Selling.delete(oid);
   }
 
-  //////////////////////////////////// upvoting ////////////////////////////////////
-  // @Router.get("/upvotes")
-  // async getUpvotes(seller: string) {
-  //   // const id = (await Authing.getUserByUsername(seller))._id;
-  //   const numUpvotes = await Upvoting.getNumUpvotes(seller);
-  //   return { msg: "Number of upvotes", upvotes: numUpvotes };
-  // }
-
-  // @Router.patch("/upvotes/add/:id")
-  // async addUpvote(session: SessionDoc, seller: string) {
-  //   const user = Sessioning.getUser(session);
-  //   const id = (await Authing.getUserByUsername(seller))._id;
-  //   const oid = new ObjectId(id);
-  //   // await Upvoting.assertUpvoterIsUser(oid, user);
-  //   return await Upvoting.upvote(user);
-  // }
-
-  // @Router.patch("/upvotes/remove/:id")
-  // async removeUpvote(session: SessionDoc, id: string) {
-  //   const user = Sessioning.getUser(session);
-  //   const oid = new ObjectId(id);
-  //   // await Upvoting.assertUpvoterIsUser(oid, user);
-  //   return await Upvoting.removeUpvote(user, oid);
-  // }
-
   //////////////////////////////////// commenting ////////////////////////////////////
   @Router.get("/items/:itemId/comments")
   async getComents(itemId: ObjectId) {
@@ -283,6 +258,36 @@ class Routes {
     const itemOid = new ObjectId(itemId);
     await Selling.unclaimItem(itemOid, user);
     return { msg: "Item unclaimed!" };
+  }
+
+  //////////////////////////////////// rating ////////////////////////////////////
+  @Router.get("/ratings")
+  async getRating(seller: string) {
+    const sellerOid = new ObjectId(seller);
+    const rating = await Rating.getRating(sellerOid);
+    if (rating == 0) {
+      return { msg: "seller doesn't have any ratings yet." };
+    }
+    return { msg: "Here is the seller's average rating.", rating: rating };
+  }
+
+  @Router.post("/ratings/:itemId")
+  async rate(session: SessionDoc, seller: string, item: string, rating: number) {
+    const user = Sessioning.getUser(session);
+    const sellerOid = new ObjectId(seller);
+    const itemOid = new ObjectId(item);
+    const ratingGiven = await Rating.rate(sellerOid, itemOid, user, rating);
+    return { msg: "The seller has been rated for this item.", rating: ratingGiven };
+  }
+
+  @Router.patch("/ratings/:itemId")
+  async changeRating(session: SessionDoc, seller: string, item: string, rating: number) {
+    const user = Sessioning.getUser(session);
+    const sellerOid = new ObjectId(seller);
+    const itemOid = new ObjectId(item);
+    Rating.assertRaterIsUser(user, sellerOid, itemOid);
+    await Rating.changeRating(sellerOid, itemOid, user, rating);
+    return { msg: "The rating has been updated." };
   }
 
   //////////////////////////////////// messaging ////////////////////////////////////
