@@ -107,25 +107,7 @@ const operations: Operation[] = [
     method: "DELETE",
     fields: { id: "input" },
   },
-  /////// upvotes /////////
-  {
-    name: "Get number of upvotes",
-    endpoint: "/api/upvotes",
-    method: "GET",
-    fields: { seller: "input" },
-  },
-  {
-    name: "Upvote",
-    endpoint: "/api/upvotes/add/:id",
-    method: "PATCH",
-    fields: { seller: "input" },
-  },
-  {
-    name: "Remove upvote",
-    endpoint: "/api/upvotes/remove/:id",
-    method: "PATCH",
-    fields: { seller: "input" },
-  },
+
   /////// comments /////////
   {
     name: "Get Comments",
